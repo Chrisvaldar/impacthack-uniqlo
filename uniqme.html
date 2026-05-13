@@ -1,515 +1,903 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniqMe</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --red: #FF0000;
-  --black: #111111;
-  --white: #FFFFFF;
-  --gray-light: #F5F5F5;
-  --gray-mid: #E0E0E0;
-  --gray-text: #767676;
-  --font-display: 'Bebas Neue', sans-serif;
-  --font-body: 'Noto Sans JP', sans-serif;
-}
-body { font-family: var(--font-body); background: var(--white); color: var(--black); min-height: 100vh; overflow-x: hidden; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniqMe</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --red: #ff0000;
+        --black: #111111;
+        --white: #ffffff;
+        --gray-light: #f5f5f5;
+        --gray-mid: #e0e0e0;
+        --gray-text: #767676;
+        --font-display: "Bebas Neue", sans-serif;
+        --font-body: "Noto Sans JP", sans-serif;
+      }
+      body {
+        font-family: var(--font-body);
+        background: var(--white);
+        color: var(--black);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-/* HEADER */
-.header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: var(--white); border-bottom: 1.5px solid var(--black);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 56px;
-}
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-box {
-  background: var(--red); color: var(--white);
-  font-family: var(--font-display); font-size: 20px;
-  letter-spacing: 1px; padding: 4px 8px; line-height: 1;
-}
-.logo-name { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; color: var(--black); }
-.step-indicator { font-size: 12px; color: var(--gray-text); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+      /* HEADER */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: var(--white);
+        border-bottom: 1.5px solid var(--black);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        height: 56px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-box {
+        background: var(--red);
+        color: var(--white);
+        font-family: var(--font-display);
+        font-size: 20px;
+        letter-spacing: 1px;
+        padding: 4px 8px;
+        line-height: 1;
+      }
+      .logo-name {
+        font-family: var(--font-display);
+        font-size: 22px;
+        letter-spacing: 2px;
+        color: var(--black);
+      }
+      .step-indicator {
+        font-size: 12px;
+        color: var(--gray-text);
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
 
-/* SCREENS */
-.screen { display: none; min-height: 100vh; padding-top: 56px; }
-.screen.active { display: flex; flex-direction: column; }
+      /* SCREENS */
+      .screen {
+        display: none;
+        min-height: 100vh;
+        padding-top: 56px;
+      }
+      .screen.active {
+        display: flex;
+        flex-direction: column;
+      }
 
-/* ── QUIZ ── */
-#screen-quiz { align-items: center; justify-content: center; padding: 80px 24px 40px; }
-.quiz-inner { width: 100%; max-width: 560px; }
-.quiz-headline { font-family: var(--font-display); font-size: 52px; line-height: 1; letter-spacing: 2px; margin-bottom: 8px; }
-.quiz-headline span { color: var(--red); }
-.quiz-sub { font-size: 14px; color: var(--gray-text); margin-bottom: 40px; font-weight: 300; }
+      /* ── QUIZ ── */
+      #screen-quiz {
+        align-items: center;
+        justify-content: center;
+        padding: 80px 24px 40px;
+      }
+      .quiz-inner {
+        width: 100%;
+        max-width: 560px;
+      }
+      .quiz-headline {
+        font-family: var(--font-display);
+        font-size: 52px;
+        line-height: 1;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .quiz-headline span {
+        color: var(--red);
+      }
+      .quiz-sub {
+        font-size: 14px;
+        color: var(--gray-text);
+        margin-bottom: 40px;
+        font-weight: 300;
+      }
 
-.question-block { margin-bottom: 32px; animation: fadeUp 0.4s ease both; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.question-block:nth-child(2) { animation-delay: 0.05s; }
-.question-block:nth-child(3) { animation-delay: 0.1s; }
-.question-block:nth-child(4) { animation-delay: 0.15s; }
-.question-block:nth-child(5) { animation-delay: 0.2s; }
-.q-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-text); margin-bottom: 10px; }
-.q-text { font-size: 17px; font-weight: 500; margin-bottom: 14px; }
-.options { display: flex; flex-wrap: wrap; gap: 8px; }
-.opt-btn {
-  border: 1.5px solid var(--gray-mid); background: var(--white); color: var(--black);
-  font-family: var(--font-body); font-size: 13px; font-weight: 400; padding: 8px 16px;
-  cursor: pointer; transition: all 0.15s ease; letter-spacing: 0.3px;
-}
-.opt-btn:hover { border-color: var(--black); }
-.opt-btn.selected { background: var(--black); color: var(--white); border-color: var(--black); }
-.cta-btn {
-  width: 100%; padding: 16px; background: var(--red); color: var(--white); border: none;
-  font-family: var(--font-display); font-size: 22px; letter-spacing: 3px;
-  cursor: pointer; margin-top: 16px; transition: opacity 0.15s;
-}
-.cta-btn:hover { opacity: 0.88; }
-.cta-btn:disabled { background: var(--gray-mid); color: var(--gray-text); cursor: not-allowed; }
+      .question-block {
+        margin-bottom: 32px;
+        animation: fadeUp 0.4s ease both;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .question-block:nth-child(2) {
+        animation-delay: 0.05s;
+      }
+      .question-block:nth-child(3) {
+        animation-delay: 0.1s;
+      }
+      .question-block:nth-child(4) {
+        animation-delay: 0.15s;
+      }
+      .question-block:nth-child(5) {
+        animation-delay: 0.2s;
+      }
+      .q-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-text);
+        margin-bottom: 10px;
+      }
+      .q-text {
+        font-size: 17px;
+        font-weight: 500;
+        margin-bottom: 14px;
+      }
+      .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .opt-btn {
+        border: 1.5px solid var(--gray-mid);
+        background: var(--white);
+        color: var(--black);
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-weight: 400;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        letter-spacing: 0.3px;
+      }
+      .opt-btn:hover {
+        border-color: var(--black);
+      }
+      .opt-btn.selected {
+        background: var(--black);
+        color: var(--white);
+        border-color: var(--black);
+      }
+      .cta-btn {
+        width: 100%;
+        padding: 16px;
+        background: var(--red);
+        color: var(--white);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 22px;
+        letter-spacing: 3px;
+        cursor: pointer;
+        margin-top: 16px;
+        transition: opacity 0.15s;
+      }
+      .cta-btn:hover {
+        opacity: 0.88;
+      }
+      .cta-btn:disabled {
+        background: var(--gray-mid);
+        color: var(--gray-text);
+        cursor: not-allowed;
+      }
 
-/* ── LOADING SCREEN ── */
-#screen-loading {
-  align-items: center; justify-content: center;
-  background: var(--black); flex-direction: column; gap: 0;
-}
-.loading-inner { text-align: center; padding: 40px; }
-.loading-logo { font-family: var(--font-display); font-size: 64px; letter-spacing: 6px; color: var(--white); margin-bottom: 4px; }
-.loading-logo span { color: var(--red); }
-.loading-tagline { font-size: 12px; color: #666; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 56px; }
-.loading-bar-wrap { width: 240px; height: 1.5px; background: #333; margin: 0 auto 24px; }
-.loading-bar-fill { height: 100%; background: var(--red); width: 0%; transition: width 0.1s linear; }
-.loading-status { font-size: 12px; color: #555; letter-spacing: 1.5px; text-transform: uppercase; min-height: 18px; }
+      /* ── LOADING SCREEN ── */
+      #screen-loading {
+        align-items: center;
+        justify-content: center;
+        background: var(--black);
+        flex-direction: column;
+        gap: 0;
+      }
+      .loading-inner {
+        text-align: center;
+        padding: 40px;
+      }
+      .loading-logo {
+        font-family: var(--font-display);
+        font-size: 64px;
+        letter-spacing: 6px;
+        color: var(--white);
+        margin-bottom: 4px;
+      }
+      .loading-logo span {
+        color: var(--red);
+      }
+      .loading-tagline {
+        font-size: 12px;
+        color: #666;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 56px;
+      }
+      .loading-bar-wrap {
+        width: 240px;
+        height: 1.5px;
+        background: #333;
+        margin: 0 auto 24px;
+      }
+      .loading-bar-fill {
+        height: 100%;
+        background: var(--red);
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+      .loading-status {
+        font-size: 12px;
+        color: #555;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        min-height: 18px;
+      }
 
-.loading-steps { margin-top: 48px; text-align: left; display: inline-block; }
-.loading-step {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 13px; color: #444; letter-spacing: 0.5px;
-  margin-bottom: 14px; opacity: 0; transition: opacity 0.4s ease;
-}
-.loading-step.visible { opacity: 1; }
-.step-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: #333;
-  flex-shrink: 0; transition: background 0.3s;
-}
-.loading-step.done .step-dot { background: var(--red); }
-.loading-step.done { color: #888; }
+      .loading-steps {
+        margin-top: 48px;
+        text-align: left;
+        display: inline-block;
+      }
+      .loading-step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        color: #444;
+        letter-spacing: 0.5px;
+        margin-bottom: 14px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .loading-step.visible {
+        opacity: 1;
+      }
+      .step-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #333;
+        flex-shrink: 0;
+        transition: background 0.3s;
+      }
+      .loading-step.done .step-dot {
+        background: var(--red);
+      }
+      .loading-step.done {
+        color: #888;
+      }
 
-/* ── CAROUSEL SCREEN ── */
-#screen-swipe { flex-direction: column; }
-.swipe-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; }
-.swipe-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 2px; }
-.swipe-title span { color: var(--red); }
+      /* ── CAROUSEL SCREEN ── */
+      #screen-swipe {
+        flex-direction: column;
+      }
+      .swipe-header {
+        padding: 20px 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .swipe-title {
+        font-family: var(--font-display);
+        font-size: 32px;
+        letter-spacing: 2px;
+      }
+      .swipe-title span {
+        color: var(--red);
+      }
 
-/* Tab bar */
-.tab-bar { display: flex; margin: 16px 24px 0; border-bottom: 1.5px solid var(--gray-mid); }
-.tab {
-  flex: 1; padding: 10px 0; text-align: center;
-  font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-  cursor: pointer; color: var(--gray-text); border-bottom: 2.5px solid transparent;
-  margin-bottom: -1.5px; transition: all 0.2s;
-}
-.tab.active { color: var(--black); border-bottom-color: var(--red); }
+      /* Tab bar */
+      .tab-bar {
+        display: flex;
+        margin: 16px 24px 0;
+        border-bottom: 1.5px solid var(--gray-mid);
+      }
+      .tab {
+        flex: 1;
+        padding: 10px 0;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        color: var(--gray-text);
+        border-bottom: 2.5px solid transparent;
+        margin-bottom: -1.5px;
+        transition: all 0.2s;
+      }
+      .tab.active {
+        color: var(--black);
+        border-bottom-color: var(--red);
+      }
 
-/* Carousel */
-.carousel-area { flex: 1; padding: 24px 0 16px; }
-.carousel-track-wrap { overflow: hidden; position: relative; }
-.carousel-track {
-  display: flex; gap: 16px;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-  padding: 0 24px;
-}
+      /* Carousel */
+      .carousel-area {
+        flex: 1;
+        padding: 24px 0 16px;
+      }
+      .carousel-track-wrap {
+        overflow: hidden;
+        position: relative;
+      }
+      .carousel-track {
+        display: flex;
+        gap: 16px;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: transform;
+        padding: 0 24px;
+      }
 
-.clothing-card {
-  flex-shrink: 0;
-  width: 240px;
-  background: var(--white);
-  border: 1.5px solid var(--black);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-}
-.clothing-card:hover { transform: translateY(-3px); }
-.clothing-card.active-card { border-color: var(--red); border-width: 2px; }
+      .clothing-card {
+        flex-shrink: 0;
+        width: 240px;
+        background: var(--white);
+        border: 1.5px solid var(--black);
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        position: relative;
+      }
+      .clothing-card:hover {
+        transform: translateY(-3px);
+      }
+      .clothing-card.active-card {
+        border-color: var(--red);
+        border-width: 2px;
+      }
 
-.card-image {
-  width: 240px; height: 280px;
-  overflow: hidden; background: var(--gray-light);
-  position: relative; display: flex; align-items: center; justify-content: center;
-}
-.card-image img {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.3s ease;
-}
-.clothing-card:hover .card-image img { transform: scale(1.03); }
-.card-badge {
-  position: absolute; top: 10px; left: 10px;
-  background: var(--black); color: var(--white);
-  font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
-  padding: 3px 7px; text-transform: uppercase; z-index: 2;
-}
-.img-fallback {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 100%; height: 100%; background: var(--gray-light);
-  color: var(--gray-text); font-size: 12px; gap: 8px; text-align: center; padding: 16px;
-}
+      .card-image {
+        width: 240px;
+        height: 280px;
+        overflow: hidden;
+        background: var(--gray-light);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      .clothing-card:hover .card-image img {
+        transform: scale(1.03);
+      }
+      .card-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: var(--black);
+        color: var(--white);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        padding: 3px 7px;
+        text-transform: uppercase;
+        z-index: 2;
+      }
+      .img-fallback {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: var(--gray-light);
+        color: var(--gray-text);
+        font-size: 12px;
+        gap: 8px;
+        text-align: center;
+        padding: 16px;
+      }
 
-.card-info { padding: 12px 14px 14px; }
-.card-name { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 2px; }
-.card-detail { font-size: 11px; color: var(--gray-text); margin-bottom: 6px; line-height: 1.4; }
-.card-row { display: flex; align-items: center; justify-content: space-between; }
-.card-price { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; color: var(--red); }
-.card-colors { display: flex; gap: 4px; }
-.color-dot { width: 12px; height: 12px; border: 1px solid rgba(0,0,0,0.15); flex-shrink: 0; }
+      .card-info {
+        padding: 12px 14px 14px;
+      }
+      .card-name {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        margin-bottom: 2px;
+      }
+      .card-detail {
+        font-size: 11px;
+        color: var(--gray-text);
+        margin-bottom: 6px;
+        line-height: 1.4;
+      }
+      .card-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-price {
+        font-family: var(--font-display);
+        font-size: 18px;
+        letter-spacing: 1px;
+        color: var(--red);
+      }
+      .card-colors {
+        display: flex;
+        gap: 4px;
+      }
+      .color-dot {
+        width: 12px;
+        height: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        flex-shrink: 0;
+      }
 
-/* Nav arrows */
-.carousel-nav { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 24px 0; }
-.nav-btn {
-  width: 40px; height: 40px; border: 1.5px solid var(--black); background: var(--white);
-  font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s; font-family: var(--font-display); letter-spacing: 0;
-}
-.nav-btn:hover { background: var(--black); color: var(--white); }
-.nav-btn:disabled { border-color: var(--gray-mid); color: var(--gray-mid); cursor: not-allowed; background: var(--white); }
-.nav-dots { display: flex; gap: 6px; align-items: center; }
-.nav-dot { width: 6px; height: 6px; background: var(--gray-mid); transition: all 0.2s; }
-.nav-dot.active { background: var(--red); width: 20px; }
+      /* Nav arrows */
+      .carousel-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 16px 24px 0;
+      }
+      .nav-btn {
+        width: 40px;
+        height: 40px;
+        border: 1.5px solid var(--black);
+        background: var(--white);
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        font-family: var(--font-display);
+        letter-spacing: 0;
+      }
+      .nav-btn:hover {
+        background: var(--black);
+        color: var(--white);
+      }
+      .nav-btn:disabled {
+        border-color: var(--gray-mid);
+        color: var(--gray-mid);
+        cursor: not-allowed;
+        background: var(--white);
+      }
+      .nav-dots {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .nav-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--gray-mid);
+        transition: all 0.2s;
+      }
+      .nav-dot.active {
+        background: var(--red);
+        width: 20px;
+      }
 
-/* Selected panel */
-.selected-panel {
-  margin: 16px 24px 0;
-  padding: 14px 16px;
-  background: var(--gray-light);
-  border-left: 3px solid var(--red);
-  display: flex; align-items: center; justify-content: space-between;
-  min-height: 52px;
-}
-.selected-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-text); margin-bottom: 3px; }
-.selected-name { font-size: 13px; font-weight: 500; }
-.select-btn {
-  background: var(--red); color: var(--white); border: none;
-  font-family: var(--font-display); font-size: 14px; letter-spacing: 1.5px;
-  padding: 8px 16px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  transition: opacity 0.15s;
-}
-.select-btn:hover { opacity: 0.85; }
-</style>
-</head>
-<body>
+      /* Selected panel */
+      .selected-panel {
+        margin: 16px 24px 0;
+        padding: 14px 16px;
+        background: var(--gray-light);
+        border-left: 3px solid var(--red);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 52px;
+      }
+      .selected-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-text);
+        margin-bottom: 3px;
+      }
+      .selected-name {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .select-btn {
+        background: var(--red);
+        color: var(--white);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 14px;
+        letter-spacing: 1.5px;
+        padding: 8px 16px;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: opacity 0.15s;
+      }
+      .select-btn:hover {
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">
+        <div class="logo-box">UNI<br />QLO</div>
+        <div class="logo-name">UNIQME</div>
+      </div>
+      <div class="step-indicator" id="step-label">Step 1 of 2</div>
+    </header>
 
-<header class="header">
-  <div class="logo">
-    <div class="logo-box">UNI<br>QLO</div>
-    <div class="logo-name">UNIQME</div>
-  </div>
-  <div class="step-indicator" id="step-label">Step 1 of 2</div>
-</header>
+    <!-- QUIZ -->
+    <div class="screen active" id="screen-quiz">
+      <div class="quiz-inner">
+        <div class="quiz-headline">FIND YOUR<br /><span>STYLE.</span></div>
+        <p class="quiz-sub">
+          Answer a few questions and we'll build your perfect Uniqlo wardrobe.
+        </p>
 
-<!-- QUIZ -->
-<div class="screen active" id="screen-quiz">
-  <div class="quiz-inner">
-    <div class="quiz-headline">FIND YOUR<br><span>STYLE.</span></div>
-    <p class="quiz-sub">Answer a few questions and we'll build your perfect Uniqlo wardrobe.</p>
+        <div class="question-block">
+          <div class="q-label">01 — Vibe</div>
+          <div class="q-text">What's your everyday style?</div>
+          <div class="options" data-q="vibe">
+            <button class="opt-btn" data-val="minimal">Minimal & clean</button>
+            <button class="opt-btn" data-val="casual">Relaxed casual</button>
+            <button class="opt-btn" data-val="smart">Smart casual</button>
+            <button class="opt-btn" data-val="street">Street & urban</button>
+          </div>
+        </div>
+        <div class="question-block">
+          <div class="q-label">02 — Colour</div>
+          <div class="q-text">Favourite colour palette?</div>
+          <div class="options" data-q="colour">
+            <button class="opt-btn" data-val="neutral">
+              Neutrals & blacks
+            </button>
+            <button class="opt-btn" data-val="earth">Earth tones</button>
+            <button class="opt-btn" data-val="navy">Blues & navys</button>
+            <button class="opt-btn" data-val="pop">Pops of colour</button>
+          </div>
+        </div>
+        <div class="question-block">
+          <div class="q-label">03 — Fit</div>
+          <div class="q-text">How do you like your clothes to fit?</div>
+          <div class="options" data-q="fit">
+            <button class="opt-btn" data-val="slim">Slim & tailored</button>
+            <button class="opt-btn" data-val="regular">Regular fit</button>
+            <button class="opt-btn" data-val="relaxed">
+              Relaxed & oversized
+            </button>
+          </div>
+        </div>
+        <div class="question-block">
+          <div class="q-label">04 — Life</div>
+          <div class="q-text">Where do you wear this most?</div>
+          <div class="options" data-q="life">
+            <button class="opt-btn" data-val="office">Office & work</button>
+            <button class="opt-btn" data-val="everyday">
+              Everyday errands
+            </button>
+            <button class="opt-btn" data-val="weekend">Weekend outings</button>
+            <button class="opt-btn" data-val="travel">Travel</button>
+          </div>
+        </div>
 
-    <div class="question-block">
-      <div class="q-label">01 — Vibe</div>
-      <div class="q-text">What's your everyday style?</div>
-      <div class="options" data-q="vibe">
-        <button class="opt-btn" data-val="minimal">Minimal & clean</button>
-        <button class="opt-btn" data-val="casual">Relaxed casual</button>
-        <button class="opt-btn" data-val="smart">Smart casual</button>
-        <button class="opt-btn" data-val="street">Street & urban</button>
+        <button class="cta-btn" id="quiz-submit" disabled>
+          BUILD MY WARDROBE →
+        </button>
       </div>
     </div>
-    <div class="question-block">
-      <div class="q-label">02 — Colour</div>
-      <div class="q-text">Favourite colour palette?</div>
-      <div class="options" data-q="colour">
-        <button class="opt-btn" data-val="neutral">Neutrals & blacks</button>
-        <button class="opt-btn" data-val="earth">Earth tones</button>
-        <button class="opt-btn" data-val="navy">Blues & navys</button>
-        <button class="opt-btn" data-val="pop">Pops of colour</button>
+
+    <!-- LOADING -->
+    <div class="screen" id="screen-loading">
+      <div class="loading-inner">
+        <div class="loading-logo">UNIQ<span>ME</span></div>
+        <div class="loading-tagline">Personalising your wardrobe</div>
+        <div class="loading-bar-wrap">
+          <div class="loading-bar-fill" id="load-bar"></div>
+        </div>
+        <div class="loading-status" id="load-status">Initialising...</div>
+        <div class="loading-steps">
+          <div class="loading-step" id="ls1">
+            <div class="step-dot"></div>
+            <span>Analysing your style preferences</span>
+          </div>
+          <div class="loading-step" id="ls2">
+            <div class="step-dot"></div>
+            <span>Matching colour palette from 400+ items</span>
+          </div>
+          <div class="loading-step" id="ls3">
+            <div class="step-dot"></div>
+            <span>Curating tops for your body type</span>
+          </div>
+          <div class="loading-step" id="ls4">
+            <div class="step-dot"></div>
+            <span>Curating bottoms for your body type</span>
+          </div>
+          <div class="loading-step" id="ls5">
+            <div class="step-dot"></div>
+            <span>Building interchangeable combinations</span>
+          </div>
+          <div class="loading-step" id="ls6">
+            <div class="step-dot"></div>
+            <span>Finalising your capsule wardrobe</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="question-block">
-      <div class="q-label">03 — Fit</div>
-      <div class="q-text">How do you like your clothes to fit?</div>
-      <div class="options" data-q="fit">
-        <button class="opt-btn" data-val="slim">Slim & tailored</button>
-        <button class="opt-btn" data-val="regular">Regular fit</button>
-        <button class="opt-btn" data-val="relaxed">Relaxed & oversized</button>
+
+    <!-- CAROUSEL -->
+    <div class="screen" id="screen-swipe">
+      <div class="swipe-header">
+        <div class="swipe-title">YOUR <span>CAPSULE</span></div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active" id="tab-tops" onclick="switchTab('tops')">
+          Tops
+        </div>
+        <div class="tab" id="tab-bottoms" onclick="switchTab('bottoms')">
+          Bottoms
+        </div>
+      </div>
+
+      <div class="selected-panel" id="selected-panel">
+        <div>
+          <div class="selected-label">Currently viewing</div>
+          <div class="selected-name" id="selected-name">—</div>
+        </div>
+        <button class="select-btn" id="shop-btn" onclick="shopItem()">
+          SHOP →
+        </button>
+      </div>
+
+      <div class="carousel-area">
+        <div class="carousel-track-wrap" id="track-wrap">
+          <div class="carousel-track" id="carousel-track"></div>
+        </div>
+        <div class="carousel-nav">
+          <button class="nav-btn" id="btn-prev" onclick="slide(-1)">←</button>
+          <div class="nav-dots" id="nav-dots"></div>
+          <button class="nav-btn" id="btn-next" onclick="slide(1)">→</button>
+        </div>
       </div>
     </div>
-    <div class="question-block">
-      <div class="q-label">04 — Life</div>
-      <div class="q-text">Where do you wear this most?</div>
-      <div class="options" data-q="life">
-        <button class="opt-btn" data-val="office">Office & work</button>
-        <button class="opt-btn" data-val="everyday">Everyday errands</button>
-        <button class="opt-btn" data-val="weekend">Weekend outings</button>
-        <button class="opt-btn" data-val="travel">Travel</button>
-      </div>
-    </div>
 
-    <button class="cta-btn" id="quiz-submit" disabled>BUILD MY WARDROBE →</button>
-  </div>
-</div>
+    <script>
+      // Real Uniqlo AU image CDN pattern + actual product codes
+      const PRODUCTS = {
+        tops: [
+          {
+            name: "AIRism Cotton Crew Neck T-Shirt",
+            detail: "Breathable AIRism fabric, everyday essential",
+            price: "$19.90",
+            tag: "BESTSELLER",
+            colors: ["#111", "#FFF", "#1a3a5c", "#8B7355"],
+            img: "top1.avif",
+            link: "https://www.uniqlo.com/au/en/products/E467854-000",
+          },
+          {
+            name: "Supima Cotton Crew Neck T-Shirt",
+            detail: "Premium 100% Supima cotton, ultra-soft",
+            price: "$29.90",
+            tag: "PREMIUM",
+            colors: ["#FFF", "#8B7355", "#556B2F", "#222"],
+            img: "top2.avif",
+            link: "https://www.uniqlo.com/au/en/products/E449893-000",
+          },
+          {
+            name: "Oxford Button-Down Shirt",
+            detail: "Classic smart-casual collar, easy care",
+            price: "$49.90",
+            tag: "CLASSIC",
+            colors: ["#FFF", "#87CEEB", "#FFE4C4", "#1a3a5c"],
+            img: "top3.avif",
+            link: "https://www.uniqlo.com/au/en/products/E461195-000",
+          },
+          {
+            name: "Flannel Long-Sleeve Shirt",
+            detail: "Soft brushed flannel, relaxed fit",
+            price: "$49.90",
+            tag: "NEW",
+            colors: ["#8B0000", "#1a3a5c", "#556B2F"],
+            img: "top4.avif",
+            link: "https://www.uniqlo.com/au/en/products/E469517-000",
+          },
+          {
+            name: "3D Knit Crew Neck Sweater",
+            detail: "Seamless merino blend, minimal seams",
+            price: "$79.90",
+            tag: "MERINO",
+            colors: ["#556B2F", "#808080", "#8B4513", "#111"],
+            img: "top5.avif",
+            link: "https://www.uniqlo.com/au/en/products/E458071-000",
+          },
+          {
+            name: "HEATTECH Extra Warm Turtleneck",
+            detail: "Warm, ultra-thin, perfect base layer",
+            price: "$34.90",
+            tag: "HEATTECH",
+            colors: ["#111", "#8B0000", "#2F4F4F", "#FFF"],
+            img: "top6.avif",
+            link: "https://www.uniqlo.com/au/en/products/E456291-000",
+          },
+        ],
+        bottoms: [
+          {
+            name: "Smart Ankle Pants",
+            detail: "Tapered fit, wrinkle-resistant fabric",
+            price: "$49.90",
+            tag: "BESTSELLER",
+            colors: ["#111", "#1a3a5c", "#8B7355", "#808080"],
+            img: "bottom1.avif",
+            link: "https://www.uniqlo.com/au/en/products/E455441-000",
+          },
+          {
+            name: "Slim Fit Chino Trousers",
+            detail: "Cotton stretch, clean silhouette",
+            price: "$49.90",
+            tag: "CHINOS",
+            colors: ["#F5DEB3", "#808080", "#556B2F", "#111"],
+            img: "bottom2.avif",
+            link: "https://www.uniqlo.com/au/en/products/E456935-000",
+          },
+          {
+            name: "Ultra Stretch Slim Fit Jeans",
+            detail: "4-way stretch denim, all-day comfort",
+            price: "$59.90",
+            tag: "JEANS",
+            colors: ["#1a3a5c", "#111", "#708090"],
+            img: "bottom3.avif",
+            link: "https://www.uniqlo.com/au/en/products/E461113-000",
+          },
+          {
+            name: "Wide Fit Pleated Trousers",
+            detail: "Relaxed elevated silhouette",
+            price: "$59.90",
+            tag: "RELAXED",
+            colors: ["#F5F5DC", "#8B7355", "#2F4F4F", "#111"],
+            img: "bottom4.avif",
+            link: "https://www.uniqlo.com/au/en/products/E468837-000",
+          },
+          {
+            name: "Jogger Pants",
+            detail: "AIRism waistband, effortlessly casual",
+            price: "$39.90",
+            tag: "AIRISM",
+            colors: ["#111", "#808080", "#1a3a5c"],
+            img: "bottom5.avif",
+            link: "https://www.uniqlo.com/au/en/products/E460027-000",
+          },
+          {
+            name: "Straight Fit Jeans",
+            detail: "Classic straight cut, relaxed through thigh",
+            price: "$59.90",
+            tag: "NEW",
+            colors: ["#1a3a5c", "#111"],
+            img: "bottom6.avif",
+            link: "https://www.uniqlo.com/au/en/products/E470080-000",
+          },
+        ],
+      };
 
-<!-- LOADING -->
-<div class="screen" id="screen-loading">
-  <div class="loading-inner">
-    <div class="loading-logo">UNIQ<span>ME</span></div>
-    <div class="loading-tagline">Personalising your wardrobe</div>
-    <div class="loading-bar-wrap"><div class="loading-bar-fill" id="load-bar"></div></div>
-    <div class="loading-status" id="load-status">Initialising...</div>
-    <div class="loading-steps">
-      <div class="loading-step" id="ls1"><div class="step-dot"></div><span>Analysing your style preferences</span></div>
-      <div class="loading-step" id="ls2"><div class="step-dot"></div><span>Matching colour palette from 400+ items</span></div>
-      <div class="loading-step" id="ls3"><div class="step-dot"></div><span>Curating tops for your body type</span></div>
-      <div class="loading-step" id="ls4"><div class="step-dot"></div><span>Curating bottoms for your body type</span></div>
-      <div class="loading-step" id="ls5"><div class="step-dot"></div><span>Building interchangeable combinations</span></div>
-      <div class="loading-step" id="ls6"><div class="step-dot"></div><span>Finalising your capsule wardrobe</span></div>
-    </div>
-  </div>
-</div>
+      let answers = {};
+      let currentTab = "tops";
+      let currentIndex = 0;
+      let currentShopLink = "";
 
-<!-- CAROUSEL -->
-<div class="screen" id="screen-swipe">
-  <div class="swipe-header">
-    <div class="swipe-title">YOUR <span>CAPSULE</span></div>
-  </div>
-  <div class="tab-bar">
-    <div class="tab active" id="tab-tops" onclick="switchTab('tops')">Tops</div>
-    <div class="tab" id="tab-bottoms" onclick="switchTab('bottoms')">Bottoms</div>
-  </div>
+      // Quiz
+      document.querySelectorAll(".opt-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const group = btn.parentElement.dataset.q;
+          btn.parentElement
+            .querySelectorAll(".opt-btn")
+            .forEach((b) => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          answers[group] = btn.dataset.val;
+          const allQs = ["vibe", "colour", "fit", "life"];
+          document.getElementById("quiz-submit").disabled =
+            allQs.filter((q) => answers[q]).length < allQs.length;
+        });
+      });
 
-  <div class="selected-panel" id="selected-panel">
-    <div>
-      <div class="selected-label">Currently viewing</div>
-      <div class="selected-name" id="selected-name">—</div>
-    </div>
-    <button class="select-btn" id="shop-btn" onclick="shopItem()">SHOP →</button>
-  </div>
+      document.getElementById("quiz-submit").addEventListener("click", () => {
+        document.getElementById("screen-quiz").classList.remove("active");
+        document.getElementById("screen-loading").classList.add("active");
+        document.getElementById("step-label").textContent =
+          "Building wardrobe...";
+        runLoadingSequence();
+      });
 
-  <div class="carousel-area">
-    <div class="carousel-track-wrap" id="track-wrap">
-      <div class="carousel-track" id="carousel-track"></div>
-    </div>
-    <div class="carousel-nav">
-      <button class="nav-btn" id="btn-prev" onclick="slide(-1)">←</button>
-      <div class="nav-dots" id="nav-dots"></div>
-      <button class="nav-btn" id="btn-next" onclick="slide(1)">→</button>
-    </div>
-  </div>
-</div>
+      function runLoadingSequence() {
+        const bar = document.getElementById("load-bar");
+        const status = document.getElementById("load-status");
+        const steps = [
+          { id: "ls1", label: "Analysing preferences...", pct: 15 },
+          { id: "ls2", label: "Matching colour palette...", pct: 30 },
+          { id: "ls3", label: "Curating tops...", pct: 50 },
+          { id: "ls4", label: "Curating bottoms...", pct: 65 },
+          { id: "ls5", label: "Building combinations...", pct: 82 },
+          { id: "ls6", label: "Finalising wardrobe...", pct: 97 },
+        ];
 
-<script>
-// Real Uniqlo AU image CDN pattern + actual product codes
-const PRODUCTS = {
-  tops: [
-    {
-      name: 'AIRism Cotton Crew Neck T-Shirt',
-      detail: 'Breathable AIRism fabric, everyday essential',
-      price: '$19.90',
-      tag: 'BESTSELLER',
-      colors: ['#111','#FFF','#1a3a5c','#8B7355'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/467854/item/augoods_09_467854.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E467854-000',
-    },
-    {
-      name: 'Supima Cotton Crew Neck T-Shirt',
-      detail: 'Premium 100% Supima cotton, ultra-soft',
-      price: '$29.90',
-      tag: 'PREMIUM',
-      colors: ['#FFF','#8B7355','#556B2F','#222'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/449893/item/augoods_08_449893.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E449893-000',
-    },
-    {
-      name: 'Oxford Button-Down Shirt',
-      detail: 'Classic smart-casual collar, easy care',
-      price: '$49.90',
-      tag: 'CLASSIC',
-      colors: ['#FFF','#87CEEB','#FFE4C4','#1a3a5c'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/461195/item/augoods_31_461195.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E461195-000',
-    },
-    {
-      name: 'Flannel Long-Sleeve Shirt',
-      detail: 'Soft brushed flannel, relaxed fit',
-      price: '$49.90',
-      tag: 'NEW',
-      colors: ['#8B0000','#1a3a5c','#556B2F'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/469517/item/augoods_69_469517.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E469517-000',
-    },
-    {
-      name: '3D Knit Crew Neck Sweater',
-      detail: 'Seamless merino blend, minimal seams',
-      price: '$79.90',
-      tag: 'MERINO',
-      colors: ['#556B2F','#808080','#8B4513','#111'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/458071/item/augoods_08_458071.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E458071-000',
-    },
-    {
-      name: 'HEATTECH Extra Warm Turtleneck',
-      detail: 'Warm, ultra-thin, perfect base layer',
-      price: '$34.90',
-      tag: 'HEATTECH',
-      colors: ['#111','#8B0000','#2F4F4F','#FFF'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/456291/item/augoods_09_456291.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E456291-000',
-    },
-  ],
-  bottoms: [
-    {
-      name: 'Smart Ankle Pants',
-      detail: 'Tapered fit, wrinkle-resistant fabric',
-      price: '$49.90',
-      tag: 'BESTSELLER',
-      colors: ['#111','#1a3a5c','#8B7355','#808080'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/455441/item/augoods_09_455441.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E455441-000',
-    },
-    {
-      name: 'Slim Fit Chino Trousers',
-      detail: 'Cotton stretch, clean silhouette',
-      price: '$49.90',
-      tag: 'CHINOS',
-      colors: ['#F5DEB3','#808080','#556B2F','#111'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/456935/item/augoods_54_456935.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E456935-000',
-    },
-    {
-      name: 'Ultra Stretch Slim Fit Jeans',
-      detail: '4-way stretch denim, all-day comfort',
-      price: '$59.90',
-      tag: 'JEANS',
-      colors: ['#1a3a5c','#111','#708090'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/461113/item/augoods_69_461113.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E461113-000',
-    },
-    {
-      name: 'Wide Fit Pleated Trousers',
-      detail: 'Relaxed elevated silhouette',
-      price: '$59.90',
-      tag: 'RELAXED',
-      colors: ['#F5F5DC','#8B7355','#2F4F4F','#111'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/468837/item/augoods_07_468837.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E468837-000',
-    },
-    {
-      name: 'Jogger Pants',
-      detail: 'AIRism waistband, effortlessly casual',
-      price: '$39.90',
-      tag: 'AIRISM',
-      colors: ['#111','#808080','#1a3a5c'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/460027/item/augoods_09_460027.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E460027-000',
-    },
-    {
-      name: 'Straight Fit Jeans',
-      detail: 'Classic straight cut, relaxed through thigh',
-      price: '$59.90',
-      tag: 'NEW',
-      colors: ['#1a3a5c','#111'],
-      img: 'https://image.uniqlo.com/UQ/ST3/au/imagesgoods/470080/item/augoods_69_470080.jpg',
-      link: 'https://www.uniqlo.com/au/en/products/E470080-000',
-    },
-  ]
-};
+        let i = 0;
+        function next() {
+          if (i > 0) {
+            const prev = document.getElementById(steps[i - 1].id);
+            prev.classList.add("done");
+          }
+          if (i >= steps.length) {
+            bar.style.width = "100%";
+            status.textContent = "Your wardrobe is ready.";
+            setTimeout(() => {
+              document
+                .getElementById("screen-loading")
+                .classList.remove("active");
+              document.getElementById("screen-swipe").classList.add("active");
+              document.getElementById("step-label").textContent =
+                "Your Wardrobe";
+              renderCarousel();
+            }, 700);
+            return;
+          }
+          const s = steps[i];
+          const el = document.getElementById(s.id);
+          el.classList.add("visible");
+          bar.style.width = s.pct + "%";
+          status.textContent = s.label;
+          i++;
+          setTimeout(next, 520 + Math.random() * 280);
+        }
+        setTimeout(next, 300);
+      }
 
-let answers = {};
-let currentTab = 'tops';
-let currentIndex = 0;
-let currentShopLink = '';
-
-// Quiz
-document.querySelectorAll('.opt-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const group = btn.parentElement.dataset.q;
-    btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    answers[group] = btn.dataset.val;
-    const allQs = ['vibe','colour','fit','life'];
-    document.getElementById('quiz-submit').disabled = allQs.filter(q => answers[q]).length < allQs.length;
-  });
-});
-
-document.getElementById('quiz-submit').addEventListener('click', () => {
-  document.getElementById('screen-quiz').classList.remove('active');
-  document.getElementById('screen-loading').classList.add('active');
-  document.getElementById('step-label').textContent = 'Building wardrobe...';
-  runLoadingSequence();
-});
-
-function runLoadingSequence() {
-  const bar = document.getElementById('load-bar');
-  const status = document.getElementById('load-status');
-  const steps = [
-    { id: 'ls1', label: 'Analysing preferences...', pct: 15 },
-    { id: 'ls2', label: 'Matching colour palette...', pct: 30 },
-    { id: 'ls3', label: 'Curating tops...', pct: 50 },
-    { id: 'ls4', label: 'Curating bottoms...', pct: 65 },
-    { id: 'ls5', label: 'Building combinations...', pct: 82 },
-    { id: 'ls6', label: 'Finalising wardrobe...', pct: 97 },
-  ];
-
-  let i = 0;
-  function next() {
-    if (i > 0) {
-      const prev = document.getElementById(steps[i-1].id);
-      prev.classList.add('done');
-    }
-    if (i >= steps.length) {
-      bar.style.width = '100%';
-      status.textContent = 'Your wardrobe is ready.';
-      setTimeout(() => {
-        document.getElementById('screen-loading').classList.remove('active');
-        document.getElementById('screen-swipe').classList.add('active');
-        document.getElementById('step-label').textContent = 'Your Wardrobe';
+      function switchTab(tab) {
+        currentTab = tab;
+        currentIndex = 0;
+        document
+          .getElementById("tab-tops")
+          .classList.toggle("active", tab === "tops");
+        document
+          .getElementById("tab-bottoms")
+          .classList.toggle("active", tab === "bottoms");
         renderCarousel();
-      }, 700);
-      return;
-    }
-    const s = steps[i];
-    const el = document.getElementById(s.id);
-    el.classList.add('visible');
-    bar.style.width = s.pct + '%';
-    status.textContent = s.label;
-    i++;
-    setTimeout(next, 520 + Math.random() * 280);
-  }
-  setTimeout(next, 300);
-}
+      }
 
-function switchTab(tab) {
-  currentTab = tab;
-  currentIndex = 0;
-  document.getElementById('tab-tops').classList.toggle('active', tab === 'tops');
-  document.getElementById('tab-bottoms').classList.toggle('active', tab === 'bottoms');
-  renderCarousel();
-}
+      function renderCarousel() {
+        const items = PRODUCTS[currentTab];
+        const track = document.getElementById("carousel-track");
+        track.innerHTML = "";
 
-function renderCarousel() {
-  const items = PRODUCTS[currentTab];
-  const track = document.getElementById('carousel-track');
-  track.innerHTML = '';
+        items.forEach((p, i) => {
+          const card = document.createElement("div");
+          card.className =
+            "clothing-card" + (i === currentIndex ? " active-card" : "");
+          card.dataset.index = i;
+          card.onclick = () => selectCard(i);
 
-  items.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'clothing-card' + (i === currentIndex ? ' active-card' : '');
-    card.dataset.index = i;
-    card.onclick = () => selectCard(i);
+          const colorsHtml = p.colors
+            .map((c) => `<div class="color-dot" style="background:${c}"></div>`)
+            .join("");
 
-    const colorsHtml = p.colors.map(c => `<div class="color-dot" style="background:${c}"></div>`).join('');
-
-    card.innerHTML = `
+          card.innerHTML = `
       <div class="card-image">
         <img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\\'img-fallback\\'><svg width=\\'48\\' height=\\'48\\' viewBox=\\'0 0 48 48\\' fill=\\'none\\'><rect x=\\'8\\' y=\\'10\\' width=\\'32\\' height=\\'28\\' rx=\\'2\\' stroke=\\'#ccc\\' stroke-width=\\'1.5\\'></rect><path d=\\'M8 16 L4 24 L12 26\\' stroke=\\'#ccc\\' stroke-width=\\'1.5\\'></path><path d=\\'M40 16 L44 24 L36 26\\' stroke=\\'#ccc\\' stroke-width=\\'1.5\\'></path></svg><span>${p.name}</span></div>'">
         <div class="card-badge">${p.tag}</div>
@@ -522,60 +910,75 @@ function renderCarousel() {
           <div class="card-colors">${colorsHtml}</div>
         </div>
       </div>`;
-    track.appendChild(card);
-  });
+          track.appendChild(card);
+        });
 
-  updateCarouselPosition();
-  updateDots();
-  updateSelectedPanel();
-}
+        updateCarouselPosition();
+        updateDots();
+        updateSelectedPanel();
+      }
 
-function selectCard(i) {
-  currentIndex = i;
-  document.querySelectorAll('.clothing-card').forEach((c, idx) => {
-    c.classList.toggle('active-card', idx === i);
-  });
-  updateCarouselPosition();
-  updateDots();
-  updateSelectedPanel();
-}
+      function selectCard(i) {
+        currentIndex = i;
+        document.querySelectorAll(".clothing-card").forEach((c, idx) => {
+          c.classList.toggle("active-card", idx === i);
+        });
+        updateCarouselPosition();
+        updateDots();
+        updateSelectedPanel();
+      }
 
-function slide(dir) {
-  const items = PRODUCTS[currentTab];
-  currentIndex = Math.max(0, Math.min(items.length - 1, currentIndex + dir));
-  selectCard(currentIndex);
-}
+      function slide(dir) {
+        const items = PRODUCTS[currentTab];
+        currentIndex = Math.max(
+          0,
+          Math.min(items.length - 1, currentIndex + dir),
+        );
+        selectCard(currentIndex);
+      }
 
-function updateCarouselPosition() {
-  const track = document.getElementById('carousel-track');
-  const cardWidth = 240 + 16; // card width + gap
-  const wrapWidth = document.getElementById('track-wrap').offsetWidth;
-  const offset = Math.max(0, currentIndex * cardWidth - (wrapWidth / 2) + (240 / 2) - 24);
-  track.style.transform = `translateX(-${offset}px)`;
+      function updateCarouselPosition() {
+        const track = document.getElementById("carousel-track");
+        const cardWidth = 240 + 16; // card width + gap
+        const wrapWidth = document.getElementById("track-wrap").offsetWidth;
+        const offset = Math.max(
+          0,
+          currentIndex * cardWidth - wrapWidth / 2 + 240 / 2 - 24,
+        );
+        track.style.transform = `translateX(-${offset}px)`;
 
-  document.getElementById('btn-prev').disabled = currentIndex === 0;
-  document.getElementById('btn-next').disabled = currentIndex === PRODUCTS[currentTab].length - 1;
-}
+        document.getElementById("btn-prev").disabled = currentIndex === 0;
+        document.getElementById("btn-next").disabled =
+          currentIndex === PRODUCTS[currentTab].length - 1;
+      }
 
-function updateDots() {
-  const dots = document.getElementById('nav-dots');
-  const items = PRODUCTS[currentTab];
-  dots.innerHTML = items.map((_, i) =>
-    `<div class="nav-dot${i === currentIndex ? ' active' : ''}" onclick="selectCard(${i})"></div>`
-  ).join('');
-}
+      function updateDots() {
+        const dots = document.getElementById("nav-dots");
+        const items = PRODUCTS[currentTab];
+        dots.innerHTML = items
+          .map(
+            (_, i) =>
+              `<div class="nav-dot${i === currentIndex ? " active" : ""}" onclick="selectCard(${i})"></div>`,
+          )
+          .join("");
+      }
 
-function updateSelectedPanel() {
-  const p = PRODUCTS[currentTab][currentIndex];
-  document.getElementById('selected-name').textContent = p ? p.name : '—';
-  currentShopLink = p ? p.link : '';
-}
+      function updateSelectedPanel() {
+        const p = PRODUCTS[currentTab][currentIndex];
+        document.getElementById("selected-name").textContent = p ? p.name : "—";
+        currentShopLink = p ? p.link : "";
+      }
 
-function shopItem() {
-  if (currentShopLink) window.open(currentShopLink, '_blank');
-}
+      function shopItem() {
+        if (currentShopLink) window.open(currentShopLink, "_blank");
+      }
 
-window.addEventListener('resize', () => { if (document.getElementById('screen-swipe').classList.contains('active')) updateCarouselPosition(); });
-</script>
-</body>
+      window.addEventListener("resize", () => {
+        if (
+          document.getElementById("screen-swipe").classList.contains("active")
+        )
+          updateCarouselPosition();
+      });
+    </script>
+  </body>
 </html>
